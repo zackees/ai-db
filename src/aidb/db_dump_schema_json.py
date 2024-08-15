@@ -6,9 +6,6 @@ from typing import Any
 
 from sqlalchemy import CheckConstraint, MetaData, create_engine, inspect
 
-# Assuming this is your custom module for handling secrets
-URL = "db://user:password@host:port/dbname"
-
 
 def db_dump_table_schema_json(
     connection_string: str,
@@ -105,7 +102,6 @@ def create_args() -> argparse.Namespace:
     parser.add_argument(
         "connection_string",
         type=str,
-        default=URL,
         help="Database connection string",
         required=True,
     )
