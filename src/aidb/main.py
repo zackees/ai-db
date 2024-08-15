@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import time
+from getpass import getpass
 from tempfile import NamedTemporaryFile
 
 import pymysql
@@ -151,7 +152,7 @@ def main() -> int:
 
     connection_string = load_connection_url()
     if not connection_string:
-        connection_string = input("Enter the database connection string: ")
+        connection_string = getpass("Enter the database connection string: ")
         store_connection_url(connection_string)
     table_names_str = input(
         "\nEnter the table names you want to ask\n"
