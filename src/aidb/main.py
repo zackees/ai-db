@@ -9,6 +9,7 @@ import time
 from tempfile import NamedTemporaryFile
 
 from aidb.db_dump_schema_json import db_dump_table_schema_json
+from aidb.secrets import load_connection_url, store_connection_url
 
 AI_PROMPT = """
 You are an expert SQL engineer.
@@ -29,16 +30,30 @@ def create_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Dump the schema of the specified tables or all tables in the database."
     )
-    parser.add_argument(
-        "connection_string", type=str, help="Database connection string"
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "connection_string", type=str, nargs="?", help="Database connection string"
     )
+    group.add_argument("--set", type=str, help="Set the connection string and exit")
     return parser.parse_args()
 
 
 def main() -> int:
     """Return 0 for success."""
     args = create_args()
+
+    if args.set_connection:
+
+        store_connection_url(args.set_connection)
+        print(f"Connection string set to: {args.set_connection}")
+        return 0
+
     connection_string = args.connection_string
+    assert connection_string is not None, "Connection string is required"
+    connection_string = load_connection_url()
+    if not connection_string:
+        print("Error: No connection string provided and none stored.")
+        return 1
     askai_exists = shutil.which("askai") is not None
     if not askai_exists:
         print('askai is not installed, install it with "pip install zcmds"')
