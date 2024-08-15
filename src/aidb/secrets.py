@@ -1,7 +1,7 @@
 import keyring
 
 
-def load_connection_url() -> str:
+def load_connection_url() -> str | None:
     return keyring.get_password("aidb", "connection_url")
 
 
