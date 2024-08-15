@@ -48,7 +48,7 @@ def init() -> None:
     pymysql.install_as_MySQLdb()
 
 
-def run(connection_string: str) -> int:
+def run(connection_string: str, table_names: list[str]) -> int:
     """Return 0 for success."""
 
     init()
@@ -62,11 +62,7 @@ def run(connection_string: str) -> int:
 
     try:
         print("This tool will generate SQL queries for you to run on the database.")
-        table_names_str = input(
-            "\nEnter the table names you want to ask\n"
-            "You can list each table (comma seperated) or use '*' to ask about all the tables in the db:\n>>> "
-        )
-        table_names = table_names_str.strip().split(",")
+
         try:
             schema = db_dump_table_schema_json(
                 connection_string=connection_string, tables=table_names
@@ -147,7 +143,12 @@ def main() -> int:
     if not connection_string:
         connection_string = input("Enter the database connection string: ")
         store_connection_url(connection_string)
-    return run(connection_string)
+        table_names_str = input(
+            "\nEnter the table names you want to ask\n"
+            "You can list each table (comma seperated) or use '*' to ask about all the tables in the db:\n>>> "
+        )
+        table_names = table_names_str.strip().split(",")
+    return run(connection_string=connection_string, table_names=table_names)
 
 
 if __name__ == "__main__":
