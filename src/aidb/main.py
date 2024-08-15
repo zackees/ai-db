@@ -44,25 +44,20 @@ def sanitize_db_url(db_url: str) -> str:
     return db_url
 
 
-def main() -> int:
+def init() -> None:
+    pymysql.install_as_MySQLdb()
+
+
+def run(connection_string: str) -> int:
     """Return 0 for success."""
 
-    pymysql.install_as_MySQLdb()
-    args = create_args()
+    init()
+
     askai_exists = shutil.which("askai") is not None
     if not askai_exists:
         print('askai is not installed, install it with "pip install zcmds"')
         return 1
 
-    if args.set:
-        store_connection_url(args.set)
-        print(f"Connection string set to: {args.set}")
-        return 0
-
-    connection_string = load_connection_url()
-    if not connection_string:
-        connection_string = input("Enter the database connection string: ")
-        store_connection_url(connection_string)
     connection_string = sanitize_db_url(connection_string)
 
     try:
@@ -137,6 +132,22 @@ def main() -> int:
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return 1
+
+
+def main() -> int:
+    """Return 0 for success."""
+    args = create_args()
+
+    if args.set:
+        store_connection_url(args.set)
+        print(f"Connection string set to: {args.set}")
+        return 0
+
+    connection_string = load_connection_url()
+    if not connection_string:
+        connection_string = input("Enter the database connection string: ")
+        store_connection_url(connection_string)
+    return run(connection_string)
 
 
 if __name__ == "__main__":
