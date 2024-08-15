@@ -4,12 +4,13 @@ import argparse
 import json
 from typing import Any
 
-# Assuming this is your custom module for handling secrets
-URL = "db://user:password@host:port/dbname"
 from sqlalchemy import CheckConstraint, MetaData, create_engine, inspect
 
+# Assuming this is your custom module for handling secrets
+URL = "db://user:password@host:port/dbname"
 
-def kumquat_db_dump_table_schema_json(
+
+def db_dump_table_schema_json(
     connection_string: str,
     tables: list[str] | None = None,
 ) -> dict[str, dict[str, Any]]:
@@ -124,11 +125,14 @@ def create_args() -> argparse.Namespace:
 def main() -> int:
     """Return 0 for success."""
     args = create_args()
+    connection_string = args.connection_string
     schema_str = ""
     try:
         if args.tables:
             table_names = [name.strip() for name in args.tables.split(",")]
-            schema = kumquat_db_dump_table_schema_json(table_names)
+            schema = db_dump_table_schema_json(
+                connection_string=connection_string, tables=table_names
+            )
             schema_str = json.dumps(schema, indent=2)
 
         else:
@@ -138,7 +142,9 @@ def main() -> int:
             if user_input == "":
                 raise ValueError("No table names provided.")
             tables = user_input.split(",") if user_input != "*" else None
-            schema = kumquat_db_dump_table_schema_json(tables)
+            schema = db_dump_table_schema_json(
+                connection_string=connection_string, tables=tables
+            )
             schema_str = json.dumps(schema, indent=2)
         print(schema_str)
         return 0

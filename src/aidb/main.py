@@ -8,7 +8,7 @@ import sys
 import time
 from tempfile import NamedTemporaryFile
 
-from aidb.kumquat_db_dump_schema_json import kumquat_db_dump_table_schema_json
+from aidb.db_dump_schema_json import db_dump_table_schema_json
 
 AI_PROMPT = """
 You are an expert SQL engineer.
@@ -38,7 +38,7 @@ def create_args() -> argparse.Namespace:
 def main() -> int:
     """Return 0 for success."""
     args = create_args()
-    args = args  # Unused variable
+    connection_string = args.connection_string
     askai_exists = shutil.which("askai") is not None
     if not askai_exists:
         print('askai is not installed, install it with "pip install zcmds"')
@@ -51,7 +51,9 @@ def main() -> int:
         )
         table_names = table_names_str.strip().split(",")
         try:
-            schema = kumquat_db_dump_table_schema_json(table_names)
+            schema = db_dump_table_schema_json(
+                connection_string=connection_string, tables=table_names
+            )
             simple_schema_str = ""
             table_schema = schema["tables"]
             for table_name, table_info in table_schema.items():
