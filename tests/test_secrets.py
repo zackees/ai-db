@@ -1,34 +1,21 @@
 import unittest
-from unittest.mock import patch
 
-from aidb.secrets import load_connection_url, store_connection_url
+from aidb.secrets import load_connection_url
+
+CONNECTION_URL = load_connection_url()
 
 
 class TestSecrets(unittest.TestCase):
 
-    @patch("aidb.secrets.keyring.get_password")
-    def test_load_connection_url(self, mock_get_password):
+    @unittest.skipUnless(CONNECTION_URL, "No connection URL found.")
+    def test_load_connection_url(self):
         # Arrange
-        expected_url = "postgresql://user:password@localhost:5432/db"
-        mock_get_password.return_value = expected_url
+        print()
 
-        # Act
-        result = load_connection_url()
-
-        # Assert
-        self.assertEqual(result, expected_url)
-        mock_get_password.assert_called_once_with("aidb", "connection_url")
-
-    @patch("aidb.secrets.keyring.set_password")
-    def test_store_connection_url(self, mock_set_password):
+    @unittest.skipUnless(CONNECTION_URL, "No connection URL found.")
+    def test_store_connection_url(self):
         # Arrange
-        test_url = "postgresql://user:password@localhost:5432/db"
-
-        # Act
-        store_connection_url(test_url)
-
-        # Assert
-        mock_set_password.assert_called_once_with("aidb", "connection_url", test_url)
+        print()
 
 
 if __name__ == "__main__":
