@@ -143,11 +143,11 @@ def main() -> int:
     if not connection_string:
         connection_string = input("Enter the database connection string: ")
         store_connection_url(connection_string)
-        table_names_str = input(
-            "\nEnter the table names you want to ask\n"
-            "You can list each table (comma seperated) or use '*' to ask about all the tables in the db:\n>>> "
-        )
-        table_names = table_names_str.strip().split(",")
+    table_names_str = input(
+        "\nEnter the table names you want to ask\n"
+        "You can list each table (comma seperated) or use '*' to ask about all the tables in the db:\n>>> "
+    )
+    table_names = table_names_str.strip().split(",")
     return run(connection_string=connection_string, table_names=table_names)
 
 
