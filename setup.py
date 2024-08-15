@@ -7,7 +7,7 @@ import re
 
 from setuptools import setup
 
-URL = "https://github.com/zackees/ai-db"
+URL = "https://github.com/zackees/aidb"
 KEYWORDS = "ai database sql"
 
 if __name__ == "__main__":
