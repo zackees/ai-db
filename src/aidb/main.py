@@ -30,11 +30,9 @@ def create_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Dump the schema of the specified tables or all tables in the database."
     )
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "connection_string", type=str, nargs="?", help="Database connection string"
+    parser.add_argument(
+        "--set", type=str, help="Set the connection string and exit", required=False
     )
-    group.add_argument("--set", type=str, help="Set the connection string and exit")
     return parser.parse_args()
 
 
@@ -46,13 +44,11 @@ def main() -> int:
         print('askai is not installed, install it with "pip install zcmds"')
         return 1
 
-    if args.set_connection:
-        store_connection_url(args.set_connection)
-        print(f"Connection string set to: {args.set_connection}")
+    if args.set:
+        store_connection_url(args.set)
+        print(f"Connection string set to: {args.set}")
         return 0
 
-    connection_string = args.connection_string
-    assert connection_string is not None, "Connection string is required"
     connection_string = load_connection_url()
     if not connection_string:
         connection_string = input("Enter the database connection string: ")
