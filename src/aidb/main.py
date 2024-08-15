@@ -48,8 +48,13 @@ def init() -> None:
     pymysql.install_as_MySQLdb()
 
 
-def run(connection_string: str, table_names: list[str]) -> int:
+def run(connection_string: str, table_names: list[str] | str) -> int:
     """Return 0 for success."""
+    if isinstance(table_names, str):
+        if ("," in table_names) or ("*" in table_names):
+            table_names = table_names.strip().split(",")
+        else:
+            table_names = [table_names]
 
     init()
 
