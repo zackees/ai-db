@@ -41,9 +41,12 @@ def create_args() -> argparse.Namespace:
 def main() -> int:
     """Return 0 for success."""
     args = create_args()
+    askai_exists = shutil.which("askai") is not None
+    if not askai_exists:
+        print('askai is not installed, install it with "pip install zcmds"')
+        return 1
 
     if args.set_connection:
-
         store_connection_url(args.set_connection)
         print(f"Connection string set to: {args.set_connection}")
         return 0
@@ -52,12 +55,9 @@ def main() -> int:
     assert connection_string is not None, "Connection string is required"
     connection_string = load_connection_url()
     if not connection_string:
-        print("Error: No connection string provided and none stored.")
-        return 1
-    askai_exists = shutil.which("askai") is not None
-    if not askai_exists:
-        print('askai is not installed, install it with "pip install zcmds"')
-        return 1
+        connection_string = input("Enter the database connection string: ")
+        store_connection_url(connection_string)
+
     try:
         print("This tool will generate SQL queries for you to run on the database.")
         table_names_str = input(
