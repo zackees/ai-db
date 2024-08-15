@@ -11,7 +11,7 @@ class TestSecrets(unittest.TestCase):
     @unittest.skipUnless(CONNECTION_URL, "No connection URL found.")
     def test_load_connection_url(self):
         # Arrange
-        rtn = run(CONNECTION_URL, "youtube")
+        rtn = run(CONNECTION_URL, "youtube", "count records and group by yrmo")
         self.assertEqual(rtn, 0)
 
 

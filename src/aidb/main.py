@@ -22,8 +22,10 @@ and if so, attempt to use the YRMO column in your query, because that is indexed
 Do not try and give multiple queries. If possible, generate just one query for the user request.
 
 If the query involves counting the number of rows AND yrmo exists in the table,
-ask the user if they would like to group by yrmo with a [y/n] response. Then based on that
-response generating the SQL query.
+ask the user if they would like to group by yrmo with a [y/n] response, but only if they didn't already
+ask for this, if they did ask to group by yrmo then DON'T ASK THE QUESTION.
+
+Then based on that response generating the SQL query.
 """
 
 
@@ -48,7 +50,9 @@ def init() -> None:
     pymysql.install_as_MySQLdb()
 
 
-def run(connection_string: str, table_names: list[str] | str) -> int:
+def run(
+    connection_string: str, table_names: list[str] | str, question: str | None = None
+) -> int:
     """Return 0 for success."""
     if isinstance(table_names, str):
         if ("," in table_names) or ("*" in table_names):
@@ -101,9 +105,10 @@ def run(connection_string: str, table_names: list[str] | str) -> int:
         print(
             "\nWith the following prompt describe in natural language what you want to query."
         )
-        process = subprocess.Popen(
-            ["askai", "--assistant-prompt-file", temp_file_path, "--check"]
-        )
+        cmd_list = ["askai", "--assistant-prompt-file", temp_file_path, "--check"]
+        if question:
+            cmd_list.append(question)
+        process = subprocess.Popen(cmd_list)
         try:
             process.wait()
         except KeyboardInterrupt:
