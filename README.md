@@ -19,3 +19,7 @@ This environment requires you to use `git-bash`.
 # Linting
 
 Run `./lint.sh` to find linting errors using `pylint`, `flake8` and `mypy`.
+
+# Releases
+
+  1.0.2: Client input for connection screen is now hidden.
