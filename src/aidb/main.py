@@ -39,6 +39,8 @@ def create_args() -> argparse.Namespace:
 
 
 def sanitize_db_url(db_url: str) -> str:
+    db_url = db_url.replace("?ssl-mode=REQUIRED", "")
+    db_url = db_url.replace("mysql://", "mysql+pymysql://")
     return db_url
 
 
