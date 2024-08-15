@@ -8,6 +8,8 @@ import sys
 import time
 from tempfile import NamedTemporaryFile
 
+import pymysql
+
 from aidb.db_dump_schema_json import db_dump_table_schema_json
 from aidb.secrets import load_connection_url, store_connection_url
 
@@ -36,8 +38,14 @@ def create_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def sanitize_db_url(db_url: str) -> str:
+    return db_url
+
+
 def main() -> int:
     """Return 0 for success."""
+
+    pymysql.install_as_MySQLdb()
     args = create_args()
     askai_exists = shutil.which("askai") is not None
     if not askai_exists:
@@ -53,6 +61,7 @@ def main() -> int:
     if not connection_string:
         connection_string = input("Enter the database connection string: ")
         store_connection_url(connection_string)
+    connection_string = sanitize_db_url(connection_string)
 
     try:
         print("This tool will generate SQL queries for you to run on the database.")

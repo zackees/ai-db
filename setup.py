@@ -9,9 +9,6 @@ from setuptools import setup
 
 URL = "https://github.com/zackees/ai-db"
 KEYWORDS = "ai database sql"
-HERE = os.path.dirname(os.path.abspath(__file__))
-
-
 
 if __name__ == "__main__":
     setup(
